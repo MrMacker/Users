@@ -1,0 +1,13 @@
+---
+- name: Push ansible user info
+  hosts: client1_l00155876 
+
+  tasks:
+
+  - name: create my admin user
+    user:
+     name: "Mark McClean"
+     comment: "My admin user Placement"
+     group: admin
+      
+

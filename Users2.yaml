@@ -7,7 +7,7 @@
   - name: create my admin user
     user:
      name: "Mark McClean"
-     comment: "My admin user Placement"
+     comment: "My admin user Managment Project"
      group: admin
       
 

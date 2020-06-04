@@ -6,7 +6,7 @@
 
   - name: create my admin user
     user:
-     name: "Mark McClean"
+     name: "Mark McLean"
      comment: "My admin user Managment Project"
      group: admin
       

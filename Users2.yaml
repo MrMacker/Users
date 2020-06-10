@@ -1,13 +1,25 @@
 ---
 - name: Push ansible user info
   hosts: client1_l00155876 
-
+  vars:
+    users:
+    - username: "MarkMcLean"
+      groups: "admin"
+    - username: "Test"
+      groups: "admin"
+    remove_users:
+    - "l00155876"  
   tasks:
 
   - name: create my admin user
     user:
-     name: "Mark McLean"
+     name: "{{ item.username }}"
      comment: "My admin user Managment Project"
-     group: admin
-      
-
+     group: "{{ item.groups }}"
+     state: "present"
+    with_items: "{{ users }}" 
+  - name: "Remove User"
+    user:
+      name: "{{ item }}"
+      state: "absent"
+    with_items: "{{ remove_users }}"

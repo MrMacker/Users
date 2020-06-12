@@ -1,23 +1,36 @@
 ---
-- name: Push ansible user info
+- name: "Create Linux User"
   hosts: client1_l00155876 
+  become: "true"
   vars:
     users:
     - username: "MarkMcLean"
-      groups: "admin"
+    - groups: "admin"
+    - state: "present"
+    - shell: "/bin/bash"
+    - system: "no"
+    - createhome: "yes"
+    - home: "/home/MarkMcLean"
     - username: "Test"
       groups: "admin"
     remove_users:
-    - "l00155876"  
+    - username: "l00155876"
+    
   tasks:
 
-  - name: create my admin user
+  - name: "create my linux account"
     user:
-     name: "{{ item.username }}"
+     name: "MarkMcLean"
+     password: "College2020!"
      comment: "My admin user Managment Project"
-     group: "{{ item.groups }}"
+     group: "sudo"
      state: "present"
-    with_items: "{{ users }}" 
+     password: "$6$JLzGbGyK$XYiwL6VPqvImSmnPrCZW0Z673Gk/mmUQJBC5nCHVFAbEj/x9Pp/76aNJI0wOewKOpQJIGmC0BRp/8/J4u5/tC/"
+     shell: /bin/bash
+     system: no
+     createhome: yes
+     home: /home/MarkMcLean
+     
   - name: "Remove User"
     user:
       name: "{{ item }}"

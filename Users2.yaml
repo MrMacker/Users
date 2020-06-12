@@ -25,7 +25,6 @@
      comment: "My admin user Managment Project"
      group: "sudo"
      state: "present"
-     password: "$6$JLzGbGyK$XYiwL6VPqvImSmnPrCZW0Z673Gk/mmUQJBC5nCHVFAbEj/x9Pp/76aNJI0wOewKOpQJIGmC0BRp/8/J4u5/tC/"
      shell: /bin/bash
      system: no
      createhome: yes

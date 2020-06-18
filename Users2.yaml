@@ -2,36 +2,52 @@
 - name: "Create Linux User"
   hosts: client1_l00155876 
   become: "true"
-  vars:
-    users:
-    - username: "MarkMcLean"
-    - groups: "admin"
-    - state: "present"
-    - shell: "/bin/bash"
-    - system: "no"
-    - createhome: "yes"
-    - home: "/home/MarkMcLean"
-    - username: "Test"
-      groups: "admin"
-    remove_users:
-    - username: "l00155876"
+  vars_files: 
+    - /etc/ansible/vars_files/pwd_mark.yaml
     
   tasks:
-
-  - name: "create my linux account"
+  - name: "Add group SYSAdmin to remote server"
+      group:
+        name: "SYSAdmin"
+        gid: "2010"
+        state: "present"
+        
+  - name: "Add user MarkMcLean to remote server"
     user:
      name: "MarkMcLean"
-     password: "College2020!"
-     comment: "My admin user Managment Project"
-     group: "sudo"
+     password: "{{ pwd_mark | password_hash('sha512') }}"
+     comment: "MarkMcLean"
+     uid: "2001"
+     group: "SYSAdmin"
      state: "present"
      shell: /bin/bash
      system: no
      createhome: yes
      home: /home/MarkMcLean
+     generate_ssh_key: "yes"
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
      
-  - name: "Remove User"
-    user:
-      name: "{{ item }}"
-      state: "absent"
-    with_items: "{{ remove_users }}"
+     - name: "Allow admin users to sudo without a password"
+      lineinfile:
+        path: "/etc/sudoers"
+        state: "present"
+        regexp: "^%sudo"
+        insertafter: "^%sudo ALL=(ALL) NOPASSWD: ALL"
+        line: "MarkMcLean ALL=(ALL) NOPASSWD: ALL"
+
+    - name: "Allow authorised keys"
+      lineinfile:
+        path: "/etc/ssh/sshd_config"
+        state: "present"
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+
+    - name: "Disable Password Autentication "
+      lineinfile:
+        path: "/etc/ssh/sshd_config"
+        state: "present"
+        regexp: "^AuthorizedKeysFile"
+        line: "AuthorizedKeysFile      %h/.ssh/authorized_keys"
+      notify: "Restart sshd"
+  

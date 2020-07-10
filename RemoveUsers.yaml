@@ -1,3 +1,4 @@
+---
 - hosts: Ansible01
   become: true
 
@@ -12,3 +13,4 @@
     file:
       path: /home/MarkMcLean
       state: absent
+  ...

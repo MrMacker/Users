@@ -13,4 +13,3 @@
     file:
       path: /home/MarkMcLean
       state: absent
-  ...

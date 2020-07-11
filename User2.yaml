@@ -55,4 +55,3 @@
         state: present
         regexp: ^AuthorizedKeysFile
         line: AuthorizedKeysFile      %h/.ssh/authorized_keys
-...

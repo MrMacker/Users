@@ -12,6 +12,12 @@
         name: SYSAdmin
         gid: 2010
         state: present
+        
+    - name: Add group RobynGRP to Ansible01 server
+      group:
+        name: RobynGRP
+        gid: 2011
+        state: present
 
     - name: "Add user MarkMcLean to Ansible01"
       user:
@@ -25,6 +31,22 @@
         system: no
         createhome: yes
         home: /home/MarkMcLean
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+        
+    - name: "Add user RobynMcLean to Ansible01"
+      user:
+        name: RobynMcLean
+        password: "{{ pwd_robyn | password_hash('sha512') }}"
+        comment: RobynMcLean
+        uid: 2002
+        group: RobynGRP
+        state: present
+        shell: /bin/bash
+        system: no
+        createhome: yes
+        home: /home/RobynMcLean
         generate_ssh_key: yes
         ssh_key_bits: 2048
         ssh_key_file: .ssh/id_rsa

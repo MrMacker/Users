@@ -1,8 +1,8 @@
 ---
 - name: "Create Remote Linux User"
-  hosts: "client1_l00155876"
+  hosts: "McLeanClient"
   become: "true"
-  vars_files: 
+  vars_files:
         - /etc/ansible/vars_files/pwd_mark.yaml
 
   tasks: 
@@ -13,8 +13,13 @@
         gid: 2010
         state: present
 
+    - name: Add group RobynGRP to Ansible01 server
+      group:
+        name: RobynGRP
+        gid: 2011
+        state: present
 
-    - name: Add user MarkMcLean to remote server
+    - name: "Add user MarkMcLean to McLeanClient"
       user:
         name: MarkMcLean
         password: "{{ pwd_mark | password_hash('sha512') }}"
@@ -27,20 +32,49 @@
         system: no
         createhome: yes
         home: /home/MarkMcLean
-
+        
+    - name: "Add user RobynMcLean to McLeanClient"
+      user:
+        name: RobynMcLean
+        password: "{{ pwd_robyn | password_hash('sha512') }}"
+        comment: RobynMcLean
+        uid: 2002
+        group: RobynGRP
+        append: yes
+        state: present
+        shell: /bin/bash
+        system: no
+        createhome: yes
+        home: /home/RobynMcLean
+     
     - authorized_key:
         user: MarkMcLean
         state: present
         manage_dir: yes
+        key: "{{ lookup('file', '/home/l00155876/.ssh/id_rsa.pub') }}
+        
+    - authorized_key:
+        user: RobynMcLean
+        state: present
+        manage_dir: yes
         key: "{{ lookup('file', '/home/l00155876/.ssh/id_rsa.pub') }}"
 
-    - name: "Allow admin users to sudo without a password"
+    - name: "Allow Mark to sudo without a password"
       lineinfile:
        path: /etc/sudoers
        state: present
        regexp: ^%sudo
        insertafter: "^%sudo ALL=(ALL) NOPASSWD: ALL"
        line: "MarkMcLean ALL=(ALL) NOPASSWD: ALL"
+
+    - name: "Allow Robyn to sudo without a password"
+      lineinfile:
+       path: /etc/sudoers
+       state: present
+       regexp: ^%sudo
+       insertafter: "^%sudo ALL=(ALL) NOPASSWD: ALL"
+       line: "RobynMcLean ALL=(ALL) NOPASSWD: ALL"
+
 
     - name: Allow authorised keys
       lineinfile:
